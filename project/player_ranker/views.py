@@ -1,4 +1,6 @@
 from flask import render_template, Blueprint
+from project.models import GameLog
+from sqlalchemy import desc
 
 player_ranker_blueprint = Blueprint(
     'data_forecast', __name__,
@@ -8,4 +10,7 @@ player_ranker_blueprint = Blueprint(
 
 @player_ranker_blueprint.route('/')
 def home():
-    return render_template('base.html')
+    best_log_object = GameLog.query.order_by(desc(GameLog.dk_pts)).limit(10).all()
+    pts_log_object = GameLog.query.order_by(desc(GameLog.pts)).limit(10).all()
+    return render_template('main.html', best_table=best_log_object,
+                           pts_table=pts_log_object)
