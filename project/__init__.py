@@ -8,7 +8,7 @@ csrf = CsrfProtect(app)
 db = SQLAlchemy(app)
 
 
-app.config.from_object(os.environ['APP_SETTINGS'])
+app.config.from_object(os.getenv('APP_SETTINGS', 'config.ProductionConfig'))
 
 from project.player_ranker.views import player_ranker_blueprint
 
