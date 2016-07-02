@@ -1,0 +1,9 @@
+test:
+  override:
+    - python tests.py
+
+deployment:
+  production:
+    branch: master
+    heroku:
+      appname: nbaranker
