@@ -8,10 +8,6 @@ player_ranker_blueprint = Blueprint(
 )
 
 
-@player_ranker_blueprint.route('/')
-def blank():
-    return render_template('base.html')
-
 @player_ranker_blueprint.route('/home')
 def home():
     best_log_object = GameLog.query.order_by(desc(GameLog.dk_pts)).limit(10).all()
