@@ -12,9 +12,10 @@ api = Api(app)
 
 app.config.from_object(os.getenv('APP_SETTINGS', 'config.ProductionConfig'))
 
-from project.resources.gamelog import GameLog_Api
+from project.resources.gamelog import GameLog_Search, GameLog_Players
 
-api.add_resource(GameLog_Api, '/api/v1/gamelog/')
+api.add_resource(GameLog_Search, '/api/v1/gamelogs/')
+api.add_resource(GameLog_Players, '/api/v1/gamelogs/players/')
 
 
 

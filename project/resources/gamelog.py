@@ -2,11 +2,22 @@ from flask import Blueprint
 from flask_restful import Resource, reqparse, fields, marshal_with
 from flask import request
 from project.models import GameLog
+from sqlalchemy import distinct
 import ast
 
 gamelog_api_blueprint = Blueprint('api', __name__)
 
-resource_fields = {
+
+class GameLog_Search(Resource):
+    """
+    TODO:1. Add the arguments to the reg parse
+         2. Add a sorting mechnism
+         3. 2 more endpoints for logs and just by
+         4. Add tests
+         Fun Fact: request.query_string, request.args.get('filter'), request.args
+         are differnt ways to get data from the request.
+    """
+    resource_fields = {
                        'id ': fields.String,
                        'gamelog_id': fields.String,
                        'season_id': fields.String,
@@ -45,17 +56,6 @@ resource_fields = {
                        'op': fields.String,
                        'dk_pts': fields.Float(4)}
 
-
-class GameLog_Api(Resource):
-    """
-    TODO:1. Add the arguments to the reg parse
-         2. Add a sorting mechnism
-         3. 2 more endpoints for logs and just by
-         4. Add tests
-         Fun Fact: request.query_string, request.args.get('filter'), request.args
-         are differnt ways to get data from the request.
-    """
-
     @marshal_with(resource_fields, envelope='resource')
     def get(self, **kwargs):
         q = GameLog.query
@@ -67,7 +67,7 @@ class GameLog_Api(Resource):
         else:
             return_size = request.args.get('limit')
         # arguments return as unicode, so I convert it to a dict
-        if not arguments:
+        if arguments:
             args = ast.literal_eval(arguments)
 
             for attr, value in args.items():
@@ -81,3 +81,16 @@ class GameLog_Api(Resource):
                     q = q.filter(getattr(GameLog, attr) == value)
 
         return q.limit(return_size).all()
+
+
+class GameLog_Players(Resource):
+
+    resource_fields = {
+                       'player_id': fields.String,
+                       'names': fields.String,
+                       'birthdate': fields.String}
+
+    @marshal_with(resource_fields, envelope='resource')
+    def get(self, **kwargs):
+        q = GameLog.query
+        return q.distinct(GameLog.player_id).all()
